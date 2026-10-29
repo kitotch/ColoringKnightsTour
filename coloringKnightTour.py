@@ -38,6 +38,7 @@ class game:
                 c = self.board[x][y]
                 if c != -1 and not visited[x][y]:
                     q = deque([(x, y)])
+                    visited[x][y] = True
                     pos = []
                     while len(q) > 0:
                         nowX, nowY = q.popleft()
