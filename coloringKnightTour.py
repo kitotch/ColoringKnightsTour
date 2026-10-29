@@ -19,23 +19,31 @@ class game:
     def make_a_move(self, move):
         x, y = move
         self.board[x][y] = self.nextColor.popleft()
-        nextColor.append(random.randrange(4))
+        self.nextColor.append(random.randrange(4))
+        chain = 0
         while True:
-            clearPos = self.clearColor()
+            clearPos = self.getClearPos()
             for x1, y1 in clearPos:
                 board[x1][y1] = -1
             if len(clearPos) == 0:
                 break
-    def clearColor(self):
+            self.score += len(clearPos) * 2 ** chain
+            chain += 1
+    def getClearPos(self):
         d = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+        visited = [[False] * 8 for _ in range(8)]
+        clearPos = []
         for x in range(8):
             for y in range(8):
                 c = self.board[x][y]
-                if c != -1:
+                if c != -1 and not visited[x][y]:
                     q = deque([(x, y)])
+                    pos = []
                     while len(q) > 0:
+                        nowX, nowY = q.popleft()
+                        pos.append((nowX, nowY))
                         for dx, dy in d:
-                            x1, y1 = x + dx, y + dy
+                            x1, y1 = nowX + dx, nowY + dy
                             if 0 <= x1 < 8 and 0 <= y1 < 8:
                                 while self.board[x1][y1] == -1:
                                     x1 += dx
@@ -43,4 +51,9 @@ class game:
                                     if not (0 <= x1 < 8 and 0 <= y1 < 8):
                                         break
                                 else:
-                                    if self.board[x1][y1] == c:
+                                    if self.board[x1][y1] == c and not visited[x1][y1]:
+                                        q.append((x1, y1))
+                                        visited[x1][y1] = True
+                    if len(pos) >= 4:
+                        clearPos.extend(pos)
+        return clearPos
