@@ -17,14 +17,14 @@ class game:
                 movesLst.append((x1, y1))
         return movesLst
     def make_a_move(self, move):
-        x, y = move
-        self.board[x][y] = self.nextColor.popleft()
+        self.pos = move
+        self.board[self.pos[0]][self.pos[1]] = self.nextColor.popleft()
         self.nextColor.append(random.randrange(4))
         chain = 0
         while True:
             clearPos = self.getClearPos()
             for x1, y1 in clearPos:
-                board[x1][y1] = -1
+                self.board[x1][y1] = -1
             if len(clearPos) == 0:
                 break
             self.score += len(clearPos) * 2 ** chain
@@ -57,3 +57,19 @@ class game:
                     if len(pos) >= 4:
                         clearPos.extend(pos)
         return clearPos
+
+game1 = game()
+while True:
+    moves = game1.gen_moves()
+    if len(moves) == 0:
+        break
+    game1.make_a_move(random.choice(moves))
+print(game1.score)
+print(game1.pos)
+for i in range(8):
+    for j in range(8):
+        if game1.board[i][j] == -1:
+            print("_", end=" ")
+        else:
+            print(game1.board[i][j], end=" ")
+    print()
