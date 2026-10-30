@@ -70,6 +70,10 @@ class Game:
                 return
             print("\033[H\033[2J", end="")
             print("score:", self.score)
+            print("next:", end=" ")
+            for i in range(3):
+                print(alphabet[self.nextColor[i]], end=" ")
+            print()
             print("      0     1     2     3     4     5     6     7")
             for i in range(8):
                 print(f"{i} ", end="")
