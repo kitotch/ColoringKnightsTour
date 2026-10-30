@@ -68,6 +68,7 @@ class Game:
                 print("Game Over")
                 print(f"Score: {self.score}")
                 return
+            print("\033[H\033[2J", end="")
             print("score:", self.score)
             print("      0     1     2     3     4     5     6     7")
             for i in range(8):
