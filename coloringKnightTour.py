@@ -1,6 +1,8 @@
 import random
 from collections import deque
-class game:
+
+# 自作ゲーム Coloring Knight's Tour
+class Game:
     def __init__(self):
         self.nextColor = deque([random.randrange(4) for _ in range(3)])
         self.pos = (random.randrange(8), random.randrange(8))
@@ -58,19 +60,45 @@ class game:
                     if len(pos) >= 4:
                         clearPos.extend(pos)
         return clearPos
+    def play(self):
+        alphabet = "ABCD"
+        while True:
+            moves = self.gen_moves()
+            if len(moves) == 0:
+                print("Game Over")
+                print(f"Score: {self.score}")
+                return
+            print("score:", self.score)
+            print("      0     1     2     3     4     5     6     7")
+            for i in range(8):
+                print(f"{i} ", end="")
+                for j in range(8):
+                    print("[", end="")
+                    if self.pos == (i, j):
+                        print("N", end=" ")
+                    else:
+                        print(" ", end=" ")
+                    if self.board[i][j] == -1:
+                        print("_", end="")
+                    else:
+                        print(alphabet[self.board[i][j]], end="")
+                    print("]", end=" ")
+                print()
+            flag = True
+            while flag:
+                print("Please input next move")
+                try:
+                    move = input()
+                    x, y = map(int, move.split())
+                    if (x, y) in moves:
+                        flag = False
+                    else:
+                        print("Your input is illegal")
+                except ValueError:
+                    print("Your input is illegal")
+            self.make_a_move((x, y))
+    def new_game(self):
+        self.__init__()
 
-game1 = game()
-while True:
-    moves = game1.gen_moves()
-    if len(moves) == 0:
-        break
-    game1.make_a_move(random.choice(moves))
-print(game1.score)
-print(game1.pos)
-for i in range(8):
-    for j in range(8):
-        if game1.board[i][j] == -1:
-            print("_", end=" ")
-        else:
-            print(game1.board[i][j], end=" ")
-    print()
+game1 = Game()
+game1.play()
