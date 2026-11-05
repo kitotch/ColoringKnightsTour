@@ -1,10 +1,9 @@
-import random
+import pygame, random
 from collections import deque
 
-# 自作ゲーム Coloring Knight's Tour
 class Game:
     def __init__(self):
-        self.nextColor = deque([random.randrange(4) for _ in range(3)])
+        self.nextColor = [random.randrange(4) for _ in range(3)]
         self.pos = (random.randrange(8), random.randrange(8))
         self.board = [[-1] * 8 for _ in range(8)]
         self.board[self.pos[0]][self.pos[1]] = random.randrange(4)
@@ -20,7 +19,7 @@ class Game:
         return movesLst
     def make_a_move(self, move):
         self.pos = move
-        self.board[self.pos[0]][self.pos[1]] = self.nextColor.popleft()
+        self.board[self.pos[0]][self.pos[1]] = self.nextColor.pop(0)
         self.nextColor.append(random.randrange(4))
         chain = 0
         while True:
@@ -61,49 +60,69 @@ class Game:
                         clearPos.extend(pos)
         return clearPos
     def play(self):
-        alphabet = "ABCD"
-        while True:
-            moves = self.gen_moves()
-            if len(moves) == 0:
-                print("Game Over")
-                print(f"Score: {self.score}")
-                return
-            print("\033[H\033[2J", end="")
-            print("score:", self.score)
-            print("next:", end=" ")
-            for i in range(3):
-                print(alphabet[self.nextColor[i]], end=" ")
-            print()
-            print("      0     1     2     3     4     5     6     7")
+        color = {
+            -1: (0xDF, 0xDF, 0xDF),
+            0: (0xDF, 0x40, 0x40),
+            1: (0x40, 0xDF, 0x40),
+            2: (0x40, 0x40, 0xDF),
+            3: (0xDF, 0xDF, 0x40)
+        }
+
+        pygame.init()
+        screen = pygame.display.set_mode((640, 480))
+        pygame.display.set_caption("Coloring Knight's Tour")
+        clock = pygame.time.Clock()
+
+        try:
+            font = pygame.font.SysFont("segoeuisymbol", 20)
+        except:
+            font = pygame.font.Font(None, 20)
+
+        knight = font.render("\u265E", True, (0, 0, 0))
+        
+        text_next = font.render("NEXT", True, (0, 0, 0))
+
+        running = True
+        moves = self.gen_moves()
+        while running:
+            screen.fill((0xFF, 0xFF, 0xFF))
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    click_x, click_y = event.pos
+                    if 40 <= click_x < 320 and 40 <= click_y < 320 and (click_x - 40) % 35 < 30 and (click_y - 40) % 35 < 30:
+                        x, y = (click_x - 40) // 35, (click_y - 40) // 35
+                        if (x, y) in moves:
+                            self.make_a_move((x, y))
+                            moves = self.gen_moves()
+
+            pygame.draw.rect(screen, (0xBF, 0xBF, 0xBF), (30, 30, 295, 295))
             for i in range(8):
-                print(f"{i} ", end="")
                 for j in range(8):
-                    print("[", end="")
-                    if self.pos == (i, j):
-                        print("N", end=" ")
-                    else:
-                        print(" ", end=" ")
-                    if self.board[i][j] == -1:
-                        print("_", end="")
-                    else:
-                        print(alphabet[self.board[i][j]], end="")
-                    print("]", end=" ")
-                print()
-            flag = True
-            while flag:
-                print("Please input next move")
-                try:
-                    move = input()
-                    x, y = map(int, move.split())
-                    if (x, y) in moves:
-                        flag = False
-                    else:
-                        print("Your input is illegal")
-                except ValueError:
-                    print("Your input is illegal")
-            self.make_a_move((x, y))
+                    x, y = 40 + i * 35, 40 + j * 35
+                    pygame.draw.rect(screen, color[self.board[i][j]], (x, y, 30, 30))
+
+            x, y = 45 + self.pos[0] * 35, 40 + self.pos[1] * 35
+            screen.blit(knight, (x, y))
+
+            pygame.draw.rect(screen, (0xBF, 0xBF, 0xBF), (335, 35, 40, 110))
+
+            for i in range(3):
+                pygame.draw.rect(screen, color[self.nextColor[i]], (340, 40 + i * 35, 30, 30))
+
+            screen.blit(text_next, (332, 15))
+
+            text_score = font.render(f"SCORE: {self.score}", True, (0, 0, 0))
+            screen.blit(text_score, (335, 150))
+
+            pygame.display.flip()
+            clock.tick(60)
+
+        pygame.quit()
     def new_game(self):
         self.__init__()
 
-game1 = Game()
-game1.play()
+if __name__ == "__main__":
+    game1 = Game()
+    game1.play()
