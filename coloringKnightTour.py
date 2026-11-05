@@ -82,6 +82,9 @@ class Game:
         
         text_next = font.render("NEXT", True, (0, 0, 0))
 
+        text_game_over = font.render("GAME OVER", True, (0, 0, 0))
+        text_new_game = font.render("new game", True, (0, 0, 0))
+
         running = True
         moves = self.gen_moves()
         while running:
@@ -96,8 +99,11 @@ class Game:
                         if (x, y) in moves:
                             self.make_a_move((x, y))
                             moves = self.gen_moves()
+                    if len(moves) == 0 and 335 <= click_x < 435 and 285 <= click_y < 320:
+                        self.new_game()
+                        moves = self.gen_moves()
 
-            pygame.draw.rect(screen, (0xBF, 0xBF, 0xBF), (30, 30, 295, 295))
+            pygame.draw.rect(screen, 0xBFBFBF, (30, 30, 295, 295))
             for i in range(8):
                 for j in range(8):
                     x, y = 40 + i * 35, 40 + j * 35
@@ -106,7 +112,7 @@ class Game:
             x, y = 45 + self.pos[0] * 35, 40 + self.pos[1] * 35
             screen.blit(knight, (x, y))
 
-            pygame.draw.rect(screen, (0xBF, 0xBF, 0xBF), (335, 35, 40, 110))
+            pygame.draw.rect(screen, 0xBFBFBF, (335, 35, 40, 110))
 
             for i in range(3):
                 pygame.draw.rect(screen, color[self.nextColor[i]], (340, 40 + i * 35, 30, 30))
@@ -115,6 +121,11 @@ class Game:
 
             text_score = font.render(f"SCORE: {self.score}", True, (0, 0, 0))
             screen.blit(text_score, (335, 150))
+
+            if len(moves) == 0:
+                pygame.draw.rect(screen, 0xBFBFBF, (335, 285, 100, 35))
+                screen.blit(text_game_over, (335, 250))
+                screen.blit(text_new_game, (340, 285))
 
             pygame.display.flip()
             clock.tick(60)
