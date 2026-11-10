@@ -27,4 +27,4 @@ python3 coloringKnightsTour.py
 pip install pygame
 ```
 # ライセンス
-  このリポジトリはMIT ライセンスに基づいて提供されます。詳しくはLICENSE.txtをご覧ください。
+  このリポジトリはMIT ライセンスに基づいて提供されます。詳しくはLICENSEをご覧ください。
