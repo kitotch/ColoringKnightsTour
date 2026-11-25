@@ -23,8 +23,6 @@ python3 coloringKnightsTour.py
 # 依存ライブラリ
   インストールされていることを確認してください。
 - pygame (ライセンス: LGPL v2.1)
-```bash
-pip install pygame
-```
+  https://github.com/pygame/pygame
 # ライセンス
   このリポジトリはMIT ライセンスに基づいて提供されます。詳しくはLICENSEをご覧ください。
