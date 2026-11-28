@@ -107,7 +107,10 @@ class Game:
             for i in range(8):
                 for j in range(8):
                     x, y = 40 + i * 35, 40 + j * 35
-                    pygame.draw.rect(screen, color[self.board[i][j]], (x, y, 30, 30))
+                    if (i, j) in moves:
+                        pygame.draw.rect(screen, 0xFFFFFF, (x, y, 30, 30))
+                    else:
+                        pygame.draw.rect(screen, color[self.board[i][j]], (x, y, 30, 30))
 
             x, y = 45 + self.pos[0] * 35, 40 + self.pos[1] * 35
             screen.blit(knight, (x, y))
